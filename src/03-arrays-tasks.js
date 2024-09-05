@@ -275,8 +275,7 @@ function getSecondItems(arr) {
  *  [ 1,2,3,4,5 ] => [ 1, 2,2, 3,3,3, 4,4,4,4, 5,5,5,5,5 ]
  */
 function propagateItemsByPositionIndex(arr) {
-  const str = arr.reduce((sum, cur) => sum + cur, '');
-  return Array.from(str, (x) => x.repeat(str.indexOf(x) + 1)).join('').split('');
+  return arr.flatMap((item, index) => Array(index + 1).fill(item));
 }
 
 
@@ -442,10 +441,15 @@ function toStringList(arr) {
  *    ]
  */
 function sortCitiesArray(arr) {
-  function sortfunction(a, b) {
-    return a.city - b.city;
-  }
-  return arr.key.sort(sortfunction);
+  return arr.sort((a, b) => {
+    if (a.country < b.country) {
+      return -1;
+    }
+    if (a.country > b.country) {
+      return 1;
+    }
+    return a.city.localeCompare(b.city);
+  });
 }
 
 /**
@@ -467,10 +471,11 @@ function sortCitiesArray(arr) {
  *           [0,0,0,0,1]]
  */
 function getIdentityMatrix(n) {
-//   const arr = Array.from(Array(n).fill(), () => new Array(n).fill(1, 1, 1));
-//   console.log(Array(n).fill().map((x) => Array(n).fill(1, x, x)));
-// console.log(Array.from(Array(n).fill(), (x) => new Array(n).fill(1, x - 1, x)));
-  return Array(n).fill(0).map(() => Array(n).fill(1, n, n));
+  //   const arr = Array.from(Array(n).fill(), () => new Array(n).fill(1, 1, 1));
+  //   console.log(Array(n).fill().map((x) => Array(n).fill(1, x, x)));
+  // console.log(Array.from(Array(n).fill(), (x) => new Array(n).fill(1, x - 1, x)));
+  const matrix = new Array(n).fill(0).map(() => new Array(n).fill(0));
+  return matrix.map((row, i) => (row.map((_, j) => (i === j ? 1 : 0))));
 }
 
 /**
