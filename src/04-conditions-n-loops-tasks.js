@@ -439,8 +439,14 @@ function toNaryString(num, n) {
  *   ['/web/assets/style.css', '/.bin/mocha',  '/read.me'] => '/'
  *   ['/web/favicon.ico', '/web-scripts/dump', '/verbalizer/logs'] => '/'
  */
-function getCommonDirectoryPath(/* pathes */) {
-  throw new Error('Not implemented');
+function getCommonDirectoryPath(pathes) {
+  return pathes.reduce((common, path) => {
+    let currentCommon = common;
+    while (path.startsWith(currentCommon) && currentCommon) {
+      currentCommon = currentCommon.slice(0, -1);
+    }
+    return currentCommon;
+  }, pathes[0]);
 }
 
 
@@ -464,20 +470,19 @@ function getCommonDirectoryPath(/* pathes */) {
  */
 function getMatrixProduct(m1, m2) {
   const result = [];
-  for (let i = 0; i < m1.length; i += 1) {
+  m1.forEach((row) => {
     const res = [];
-    for (let j = 0; i < m2[0].length; j += 1) {
+    m2[0].forEach((_, j) => {
       let sum = 0;
-      for (let k = 0; k < m1[0].length; k += 1) {
-        sum += m1[i][k] * m2[k][j];
-      }
+      m1[0].forEach((__, k) => {
+        sum += row[k] * m2[k][j];
+      });
       res.push(sum);
-    }
+    });
     result.push(res);
-  }
+  });
   return result;
 }
-
 
 /**
  * Returns the evaluation of the specified tic-tac-toe position.
