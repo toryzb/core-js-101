@@ -169,8 +169,11 @@ function doRectanglesOverlap(/* rect1, rect2 */) {
  *   { center: { x:0, y:0 }, radius:10 },  { x:10, y:10 }   => false
  *
  */
-function isInsideCircle(/* circle, point */) {
-  throw new Error('Not implemented');
+function isInsideCircle(circle, point) {
+  const distance = Math.sqrt((point.x - circle.center.x) ** 2 + (point.y - circle.center.y) ** 2);
+
+  // Сравнение расстояния с радиусом
+  return distance < circle.radius;
 }
 
 
@@ -185,22 +188,20 @@ function isInsideCircle(/* circle, point */) {
  *   'abracadabra'  => 'c'
  *   'entente' => null
  */
-function findFirstSingleChar(/* str */) {
-  // let res = '';
-  // const sum = 0;
-  // for (let i = 0; i < str.length; i += 1) {
-  //   for (let j = i + 1; j < str.length; j += 1) {
-  //     if (str[i] === str[j]) {
-  //       continue;
-  //     } else {
-  //       sum += 1;
-  //     }
-  //   }
-  //   if (sum === 0) {
-  //     res
-  //   }
-  // }
-  throw new Error('Not implemented');
+function findFirstSingleChar(str) {
+  for (let i = 0; i < str.length; i += 1) {
+    let isSingleChar = true;
+    for (let j = i + 1; j < str.length; j += 1) {
+      if (str[i] === str[j]) {
+        isSingleChar = false;
+        break;
+      }
+    }
+    if (isSingleChar) {
+      return str[i];
+    }
+  }
+  return null;
 }
 
 
@@ -315,18 +316,23 @@ function reverseInteger(num) {
  *   4916123456789012 => false
  */
 function isCreditCardNumber(ccn) {
+  const ccnString = ccn.toString();
   let sum = 0;
-  const parity = ccn.length % 2;
-  for (let i = 0; i < ccn.length; i += 1) {
-    if (i % 2 !== parity) {
-      sum += ccn[i];
-    } else if (ccn[i] > 4) {
-      sum += 2 * ccn[i] - 9;
+  const revCcn = ccnString.split('').reverse().join('');
+  for (let i = 0; i < revCcn.length; i += 1) {
+    const dig = parseInt(revCcn[i], 10);
+    if (revCcn.length % 2 !== i % 2) {
+      sum += dig * 2 > 9 ? dig * 2 - 9 : dig * 2;
+      //   dig *= 2;
+      //   if (dig > 9) {
+      //     dig -= 9;
+      //   }
     } else {
-      sum += 2 * ccn[i];
+      sum += dig;
+      // }
     }
   }
-  return ccn.length === (10 - (sum % 10));
+  return sum % 10 === 0;
 }
 
 /**
@@ -456,17 +462,20 @@ function getCommonDirectoryPath(/* pathes */) {
  *                         [ 6 ]]
  *
  */
-function getMatrixProduct(/* m1, m2 */) {
-  // let result = [];
-  // for (let i = 0; i < m2.length; i += 1) {
-  //   let sum = 0;
-  //   let res = [];
-  //   for (let j = 0; i < m1.length; j += 1) {
-  //     sum += m1[i][j] * m2[j][i];
-  //   }
-  //   res.push(sum);
-  // }
-  throw new Error('Not implemented');
+function getMatrixProduct(m1, m2) {
+  const result = [];
+  for (let i = 0; i < m1.length; i += 1) {
+    const res = [];
+    for (let j = 0; i < m2[0].length; j += 1) {
+      let sum = 0;
+      for (let k = 0; k < m1[0].length; k += 1) {
+        sum += m1[i][k] * m2[k][j];
+      }
+      res.push(sum);
+    }
+    result.push(res);
+  }
+  return result;
 }
 
 
