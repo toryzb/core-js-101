@@ -138,8 +138,14 @@ function isTriangle(a, b, c) {
  *   { top:20, left:20, width: 20, height: 20 }    =>  false
  *
  */
-function doRectanglesOverlap(/* rect1, rect2 */) {
-  throw new Error('Not implemented');
+function doRectanglesOverlap(rect1, rect2) {
+  if (rect1.left + rect1.width <= rect2.left || rect2.left + rect2.width <= rect1.left) {
+    return false;
+  }
+  if (rect1.top + rect1.height <= rect2.top || rect2.top + rect2.height <= rect1.top) {
+    return false;
+  }
+  return true;
 }
 
 
@@ -321,15 +327,10 @@ function isCreditCardNumber(ccn) {
   const revCcn = ccnString.split('').reverse().join('');
   for (let i = 0; i < revCcn.length; i += 1) {
     const dig = parseInt(revCcn[i], 10);
-    if (revCcn.length % 2 !== i % 2) {
+    if (i % 2) {
       sum += dig * 2 > 9 ? dig * 2 - 9 : dig * 2;
-      //   dig *= 2;
-      //   if (dig > 9) {
-      //     dig -= 9;
-      //   }
     } else {
       sum += dig;
-      // }
     }
   }
   return sum % 10 === 0;
@@ -440,13 +441,20 @@ function toNaryString(num, n) {
  *   ['/web/favicon.ico', '/web-scripts/dump', '/verbalizer/logs'] => '/'
  */
 function getCommonDirectoryPath(pathes) {
-  return pathes.reduce((common, path) => {
-    let currentCommon = common;
-    while (path.startsWith(currentCommon) && currentCommon) {
-      currentCommon = currentCommon.slice(0, -1);
+  const result = pathes.map((str) => str.split('/'));
+  const minLength = Math.min(...result.map((part) => part.length));
+  let commonPath = '';
+
+  for (let i = 0; i < minLength; i += 1) {
+    const char = result[0][i];
+    if (result.every((part) => part[i] === char)) {
+      commonPath += `${char}/`;
+    } else {
+      break;
     }
-    return currentCommon;
-  }, pathes[0]);
+  }
+
+  return commonPath || '';
 }
 
 
